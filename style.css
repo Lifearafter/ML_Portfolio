@@ -1,0 +1,41 @@
+@font-face {
+  font-family: "Above-Demo";
+  src: url(./assets/AboveDemoRegular-lJMd.ttf);
+}
+
+body {
+  background-color: #e5eaf5;
+  font-family: "Above-Demo";
+  /* background-color: #a0d2eb; */
+}
+
+.side-bar {
+  float: left;
+  background-color: #494d5f;
+  border: 1px solid gray;
+  border-radius: 4px;
+  padding: 0 1vw 0 0;
+  width: 1vw;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 0.5px;
+  justify-content: center;
+  /* align-items: center; */
+}
+
+.container-main {
+  margin-left: 5vw;
+}
+
+.landing-text {
+  font-size: 1.5vmax;
+  color: #494d5f;
+  font-family: inherit;
+  font-weight: 300;
+  margin: 0 0 0 5vw;
+  padding-top: 10%;
+}
+
+.bar-item {
+}
