@@ -1,0 +1,7 @@
+{
+  "files.associations": {
+    "*.jsx": "javascriptreact",
+    "tuple": "cpp",
+    "vector": "cpp"
+  }
+}
