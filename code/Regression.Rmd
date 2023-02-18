@@ -1,0 +1,160 @@
+---
+title: "Regression"
+author: "Muhammad Zaid"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+Linear Regression seeks to find a best fit linear line between a actual and predicted value. The value being predicted is a dependent variable, where the variables being used to make the prediction are independent variables. The predicted value is dependent on these independent variables. The goal for linear regression is the find the line that allows for the smallest distance between the predicted and actual value. Linear regression only works on quantitative data.
+
+Data-set: <https://www.kaggle.com/datasets/jahaidulislam/significant-earthquake-dataset-1900-2023>
+
+------------------------------------------------------------------------
+
+## Data Pre-processing
+
+------------------------------------------------------------------------
+
+### Load Data from csv file
+
+```{r}
+dataset <-  read.csv(file = 'Significant Earthquake Dataset 1900-2023.csv')
+```
+
+------------------------------------------------------------------------
+
+### Remove unneeded columns from data-set
+
+```{r}
+dataset <- subset(dataset, select = -c(X) )
+lineardf <- subset(dataset, select = -c(Time, Place, MagType, ID, Updated, Type, status, locationSource, magSource, net))
+
+```
+
+### Determine columns to drop based on the amount of NA
+
+```{r}
+colSums(is.na(lineardf))
+lineardf <- subset(lineardf, select = -c(nst,gap,dmin,rms, horizontalError, depthError, magError, magNst))
+lineardf <- na.omit(lineardf)
+
+nrow(lineardf)
+
+```
+
+### Divide the training and testing sets
+
+```{r}
+train_indices <- sample(1:nrow(lineardf), 0.8*nrow(lineardf), replace=FALSE)
+traindf <- lineardf[train_indices,]
+testdf <- lineardf[-train_indices,]
+
+```
+
+### Data Exploration of the training set
+
+```{r}
+nrow(traindf)
+summary(traindf)
+str(traindf)
+```
+
+### Useful plots
+
+```{r}
+par(mfrow=c(1,2))
+boxplot(traindf)
+plot(traindf$Mag~traindf$Depth, xlab="Depth", ylab = "Mag" )
+abline(lm(traindf$Mag~traindf$Depth), col="red")
+
+
+```
+
+### Model
+
+```{r}
+linear_model <- lm(Mag~Depth, data=traindf)
+summary(linear_model)
+
+```
+
+The summary results seem to suggest that the prediction was not quite accurate, with the Median residuals showing how far the prediction strayed from the actual value in the model prediction. It also does not have a symmetrical shape to its output. The average depth calculated by the Estimate for the Intercept tells us how deep the average of all the magnitudes of an earthquake would be. The Slope/Mag tells us how the depth decreases with a 1 magnitude increase. This varies however by about 1.3956. For our model the t-values are way closer to zero than we would have wanted to see, this means that there is a chance for the null hypothesis to be true that their is no relationship between the two variables. This is just confirmed by the slopes p value, which is far higher than what we would like to see.
+
+### Plots
+
+```{r}
+par(mfrow=c(2,2))
+plot(linear_model)
+
+```
+
+Even though the residuals vs Fitted graph gives us a nice linear line, the place and distribution of the graph are very abnormal. For the Normal Q-Q graph the first few values are nicely following the dashed line until about 1 on the horizontal axis where the deviate highly. The residuals seem to be spread closer to the left side of the graph for the Scale-Location, while the line also seems to neglect the higher y-value fitted values.
+
+### Multiple predictor linear model
+
+```{r}
+lm2 <- lm(Mag~ Latitude + Longitude, data=traindf)
+summary(lm2)
+
+```
+
+### Plots
+
+```{r}
+par(mfrow=c(2,2))
+plot(lm2)
+```
+
+This models shows promising results for rejecting the null hypothesis for the longitude and latitude variables, who have lower p values, and higher t values. Depth remains to be unrelated as was expected. Standard error this time is also exceptionally low for the model. However the plots still seem to suggest concern for the models accuracy. The plots suggest that the model still suffers from the same problems just like the model with one predictor for the Normal Q-Q graph otherwise the other graphs show a expected and wanted result.
+
+### Model 3 with tuning
+
+```{r}
+lm3 <- lm(log(Mag)~ Latitude + Longitude + Depth + I(Depth^2), data=traindf)
+summary(lm3)
+
+```
+
+### Plots
+
+```{r}
+par(mfrow=c(2,2))
+plot(lm3)
+```
+
+### Comparing the Models
+
+After looking at all the summaries and plots for the three models built in this notebook, I find that Model three seems to perform the best. My decisions relies on many different factors in both the summary and the plots. In the summary there is an obvious relationship between the predictor and the target variable. This inference is based on the t-value, the p-value, and the F-statistic. There is also higher symmetry for the Residuals in the summary. For the plots, they all seem to be better than the ones for the other models, especially, the Normal Q-Q graph which had the residuals way close to the line than any of the other graphs.
+
+### All Coefficients and Mse
+
+```{r}
+print("Linear Model 1\n")
+
+pred <- predict(linear_model, newdata=testdf)
+correlation <- cor(pred, testdf$Mag)
+mse <- mean((pred-testdf$Mag)^2)
+print(paste("MSE:", mse ) )
+print(paste("Correlation:", correlation ) )
+
+print("Linear Model 2\n")
+pred <- predict(lm2, newdata=testdf)
+corr2 <- cor(pred, testdf$Mag)
+mse2 <- mean((pred-testdf$Mag)^2)
+
+print(paste("MSE:", mse2 ) )
+print(paste("Correlation:", corr2 ) )
+
+print("Linear Model 3\n")
+pred <- predict(lm3, newdata=testdf)
+corr3 <- cor(pred, testdf$Mag)
+mse3 <- mean((pred-testdf$Mag)^2)
+
+print(paste("MSE:", mse3 ) )
+print(paste("Correlation:", corr3 ) )
+
+
+```

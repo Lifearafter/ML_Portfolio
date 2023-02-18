@@ -13,3 +13,9 @@ You can see the [overview here](pdfs/OverviewOfML.pdf).
 This document contains my implementations for R data exploration functions in c++;
 
 You can see the [code here](code/dataexploration.cpp) and the [descriptive document here](pdfs/DataExploration.pdf).
+
+## Linear Models
+
+This document contains my linear models for the earthquake dataset.
+
+You can see the [R Notebook here](code/Regression.Rmd) and the [descriptive document here](pdfs/Regression.pdf).
