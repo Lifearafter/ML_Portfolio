@@ -3,6 +3,7 @@
 #include <math.h>
 #include <vector>
 #include <algorithm>
+#include <regex>
 
 void toMatrix(std::string filename, std::vector<std::vector<double>> &m);
 void printMatrix(std::vector<std::vector<double>> &m);
@@ -41,7 +42,8 @@ void toMatrix(std::string filename, std::vector<std::vector<double>> &m)
             {
                 int pos = line.find(",");
                 std::string value = line.substr(0, pos + i);
-                v.push_back(std::stod(value));
+                std::string regexOut = std::regex_replace(value, std::regex(R"((-|\+)?(\d)+(.(\d)+)*))"), "");
+                v.push_back(std::stod(regexOut));
             }
             m.push_back(v);
         }
