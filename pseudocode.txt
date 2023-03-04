@@ -1,0 +1,23 @@
+loop -> 800:
+
+matrix multiplication with weights -> 1 number
+
+sigmoid out= sigmoid function -> numbers
+error = label[i] -  sigmoid out
+push error into a vector
+exit loop
+
+loop -> 800
+
+
+one loop for train goes till 800
+    get new index using rand
+    nested loop until max columnNum
+        use index to push existing information into vectors for train
+        erase those indexes from temp matrix
+
+one loop for test goes till empty
+    get new index using rand
+    nested loop until max columnNum
+        use index to push existing information into vectors for test
+        erase those indexes from temp matrix
