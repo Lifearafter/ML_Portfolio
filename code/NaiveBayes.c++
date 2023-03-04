@@ -7,6 +7,7 @@
 
 void toMatrix(std::string filename, std::vector<std::vector<double>> &m);
 void printMatrix(std::vector<std::vector<double>> &m);
+void printVector(std::vector<double> &v);
 
 void naiveBayes();
 
@@ -14,6 +15,7 @@ int main()
 {
     std::vector<std::vector<double>> m;
     toMatrix("titanic_project.csv", m);
+    printMatrix(m);
 
     return 0;
 }
@@ -37,17 +39,42 @@ void toMatrix(std::string filename, std::vector<std::vector<double>> &m)
 
         for (int i = 1; i < colNum; i++)
         {
+            // file.clear();
+            // file.seekg(0);
             std::vector<double> v;
             while (std::getline(file, line))
             {
                 int pos = line.find(",");
                 std::string value = line.substr(0, pos + i);
-                std::string regexOut = std::regex_replace(value, std::regex(R"((-|\+)?(\d)+(.(\d)+)*))"), "");
+                std::string regexOut = std::regex_replace(value, std::regex("[^0-9.]"), "");
                 v.push_back(std::stod(regexOut));
             }
             m.push_back(v);
+            printVector(v);
         }
     }
     std::printf("Matrix Column Size: %d \n", m.size());
     file.close();
+}
+
+void printMatrix(std::vector<std::vector<double>> &m)
+{
+    for (int i = 0; i < m.size(); i++)
+    {
+        printf("Column %d: ", i);
+        for (int j = 0; j < m.at(i).size(); j++)
+        {
+            printf("%.2f ", m.at(i).at(j));
+        }
+        printf("\n");
+    }
+}
+
+void printVector(std::vector<double> &v)
+{
+    for (int i = 0; i < v.size(); i++)
+    {
+        printf("%.2f ", v.at(i));
+    }
+    printf("\n");
 }
