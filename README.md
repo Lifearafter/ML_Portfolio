@@ -24,4 +24,4 @@ You can see the [R Notebook here](code/Regression.Rmd) and the [descriptive docu
 
 This document contains my c++ implementation different classification algorithms.
 
-You can see the [Naive Bayes](code/NaiveBayes), [Logarithmic Regression](code/LogarithmicReg) and the [descriptive document here](pdfs/C++Algorithms.pdf).
+You can see the [Naive Bayes](code/NaiveBayes.c++), [Logarithmic Regression](code/LogarithmicReg.cpp) and the [descriptive document here](pdfs/C++Algorithms.pdf).
