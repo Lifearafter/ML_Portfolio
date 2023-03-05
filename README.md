@@ -19,3 +19,9 @@ You can see the [code here](code/dataexploration.cpp) and the [descriptive docum
 This document contains my linear models for the earthquake dataset.
 
 You can see the [R Notebook here](code/Regression.Rmd) and the [descriptive document here](pdfs/Regression.pdf).
+
+## C++ Implementation of Algorithms
+
+This document contains my c++ implementation different classification algorithms.
+
+You can see the [Naive Bayes](code/NaiveBayes), [Logarithmic Regression](code/LogarithmicReg) and the [descriptive document here](pdfs/C++Algorithms.pdf).
