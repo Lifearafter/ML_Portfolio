@@ -1,0 +1,250 @@
+---
+title: "Dimensionality Reduction"
+author: "Muhammad Zaid"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+editor_options:
+  chunk_output_type: inline
+---
+
+------------------------------------------------------------------------
+
+## Install Packages
+
+```{r}
+#install.packages("ggplot2", dependencies = TRUE)
+#install.packages("e1071", dependencies = TRUE)
+#install.packages("carat", dependencies = TRUE)
+#install.packages("rpart", dependencies = TRUE)
+
+```
+
+## Import Loan Data Set
+
+The first step we import the Perth housing data from Kaggle. This was the data-set used by person 2.
+
+[Link](https://www.kaggle.com/datasets/itssuru/loan-data)
+
+```{r}
+getwd()
+list.files("../DimentionalityReduction")
+loandf <- read.csv("./loan_data.csv")
+```
+
+<strong>For this Data set we are predicting if a person was approved for a loan or not.</strong>
+
+## Data Pre-processing
+
+Since the target value for this data set is a purpose for the loan (qualitative), we would have to remove some columns to train the Classification Model.
+
+For this model not much pre-processing is needed, just some data visualization to understand the results of any Classification Models.
+
+First we figure out if there are any NA values in this data set, and which columns contain these Na's. For the Loan Data Set there are no Columns that contain Na's.
+
+Next we look at the distribution of Classes in the Data set. As we found from the data the distribution between the classes is not the most ideal, this is going to reflect in the Classification Model.
+
+I also included some Data Visualization to find some relationship between the classes and some other column.
+
+From the data given in the plots below, I am inclined to think that this data set might not have the best classification results, as the two classes seem to have little difference, and many points blur the line that differentiates the classes.
+
+```{r}
+
+library(ggplot2)
+
+colnames(loandf)[colSums(is.na(loandf)) > 0]
+table(loandf$credit.policy)
+
+
+# Compute proportion of each value
+prop <- prop.table(table(loandf$credit.policy))
+
+# Create pi chart using ggplot2
+ggplot(data = loandf, aes(x = factor(credit.policy), fill = factor(credit.policy))) + 
+  geom_bar(width = 1, color = "white") +
+  scale_fill_manual(values = c("#009E73", "#D55E00")) +
+  labs(title = "Loan Approval Status", x = "", y = "Count")
+
+loandf$credit.policy <- factor(loandf$credit.policy)
+
+ggplot(data = loandf, aes(x = dti, y = fico, shape = credit.policy, color = credit.policy)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_shape_manual(values = c(19, 15)) +
+  scale_color_manual(values = c("#009E73",  "#D55E00")) +
+  theme_minimal()
+
+pairs(loandf[3:13], pch = 21, bg = c("#009E73",  "#D55E00")[unclass(loandf$credit.policy)])
+
+
+
+ggplot(loandf, aes(x = fico, y = int.rate, color = factor(credit.policy))) +
+  geom_point(size = 3, shape = 21, alpha = 0.7) +
+  scale_color_manual(values = c("#009E73", "#D55E00")) +
+  labs(x = "FICO Score", y = "Interest Rate", color = "Credit Policy") +
+  theme_minimal()
+
+str(loandf)
+
+```
+
+## Classification Modelling
+
+First we separate the data sets into train and test sets.
+
+```{r}
+set.seed(123)
+sample <- sample(c(TRUE, FALSE), nrow(loandf), replace=TRUE, prob=c(0.7,0.3))
+train  <- loandf[sample, ]
+test   <- loandf[!sample, ]
+
+train_purpose <- subset(train, select = credit.policy)
+
+train <- subset(train, select = -purpose)
+test <- subset(test, select = -purpose)
+```
+
+Now we move on to actually building the models.
+
+### Descision Tree Classification
+
+```{r}
+library("rpart")
+library("rpart.plot")
+library("maptree")
+
+tree <- rpart(train$credit.policy~., data=train, method="class")
+rpart.plot(tree)
+
+draw.tree(tree,cex=1)
+
+```
+
+Now to predict and get confusion matrix
+
+```{r}
+library(caret)
+pred = predict(tree, newdata = test[2:13], type = "class")
+cm <-confusionMatrix(table(pred,test$credit.policy))
+cm
+```
+
+### Naive Bayes
+
+After trying the multinomial naive Bayes model from the naivebayes library, I found that between that and Gaussian, Gaussian always has a higher accuracy for this dataset.
+
+```{r}
+library(naivebayes)
+
+nb_model <- naive_bayes( x= as.matrix(train[2:13]), y = train$credit.policy)
+nb_model
+
+```
+
+Now to predict the results and get an accuracy value
+
+```{r}
+library(caret)
+pred = predict(nb_model, newdata = as.matrix(test[2:13]), type = "class")
+cm <-confusionMatrix(table(pred,test$credit.policy))
+cm
+
+```
+
+#### Reflections on Models
+
+With Naive Bayes the model seem to perform OK, with a 87% accuracy. With the Decision Tree however, the model seemed to predict much better with a accuracy of 98%.
+
+From what I understand LDA might help the Naive Bayes Model increase its accuracy to something above 90%, while it would inversely effect the decision tree.
+
+PCA should do the opposite, but I think the results for the Decision Tree would indicate a very small increase in accuracy.
+
+### Principle Components Analysis (PCA)
+
+#### PCA on Data
+
+```{r}
+pca_out <- preProcess(train[2:13], method=c("center", "scale", "pca"))
+pca_out
+```
+
+Since there were ten components needed to capture all of the variance, there is no feasible way to visualize the difference.
+
+#### PCA Model
+
+```{r}
+train_pc <- predict(pca_out, train[2:13])
+test_pc <- predict(pca_out, test[2:13])
+
+train_df <- data.frame(predict(pca_out, train[2:13]), train$credit.policy)
+
+test_df <- data.frame(predict(pca_out, test[2:13]), test$credit.policy)
+
+library("rpart")
+library("rpart.plot")
+library("maptree")
+
+tree <- rpart(train_df$train.credit.policy~., data=train_df, method="class")
+rpart.plot(tree)
+
+draw.tree(tree,cex=1)
+
+```
+
+#### Predict PCA Decision Tree
+
+```{r}
+library(caret)
+pred = predict(tree, newdata = test_df[1:10], type = "class")
+cm <-confusionMatrix(table(pred,test_df$test.credit.policy))
+cm
+
+```
+
+The decision tree accuracy decreased by about 10%, dropping from a 98% accuracy to 88.88%.
+
+## Linear Discriminate Analysis (LDA)
+
+### Use LDA on Data
+
+```{r}
+set.seed(123)
+loandf[3:13] <- scale(loandf[3:13])
+
+apply(loandf[3:13], 2, mean)
+
+apply(loandf[3:13], 2, sd)
+```
+
+Create Training and Test
+
+```{r}
+sample <- sample(c(TRUE, FALSE), nrow(loandf), replace=TRUE, prob=c(0.7,0.3))
+train  <- loandf[sample, ]
+test   <- loandf[!sample, ]
+
+train_purpose <- subset(train, select = credit.policy)
+
+train <- subset(train, select = -purpose)
+test <- subset(test, select = -purpose)
+```
+
+```{r}
+library(MASS)
+
+lda_data <- lda(train$credit.policy~., data = train)
+lda_data
+lda_data$means
+
+```
+
+### LDA Predict
+
+```{r}
+pred = predict(lda_data, newdata = test[2:13], type = "class")
+mean(pred$class==test$credit.policy)
+
+head(pred$x)
+```
+
+It reduced the classification into only 1 Linear Discriminant.This however has a better accuracy than the Naive Bayes Model.

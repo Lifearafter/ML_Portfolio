@@ -88,7 +88,7 @@ std::tuple<double, double> naiveBayes(int pclass, int sex, double age, std::vect
 
     double den = num_s + num_p;
 
-    return std::make_tuple(num_p / den, num_s / den);
+    return std::make_tuple(num_s / den, num_p / den);
 }
 
 double probDensity(double x, double mean, double var)
@@ -470,7 +470,7 @@ double accuracy(std::vector<std::vector<double>> &m, std::vector<std::vector<dou
 
     for (int i = 0; i < m.at(1).size(); i++)
     {
-        std::tuple<double, double> prob = naiveBayes(m.at(0).at(i), m.at(1).at(i), m.at(3).at(i), lpclass, lsex, lage, mean, var, apriori);
+        std::tuple<double, double> prob = naiveBayes(m.at(0).at(i), m.at(2).at(i), m.at(3).at(i), lpclass, lsex, lage, mean, var, apriori);
 
         if (std::get<0>(prob) > std::get<1>(prob))
         {
@@ -508,7 +508,7 @@ double sensitivity(std::vector<std::vector<double>> &m, std::vector<std::vector<
 
     for (int i = 0; i < m.at(1).size(); i++)
     {
-        std::tuple<double, double> prob = naiveBayes(m.at(0).at(i), m.at(1).at(i), m.at(3).at(i), lpclass, lsex, lage, mean, var, apriori);
+        std::tuple<double, double> prob = naiveBayes(m.at(0).at(i), m.at(2).at(i), m.at(3).at(i), lpclass, lsex, lage, mean, var, apriori);
 
         if (std::get<0>(prob) > std::get<1>(prob))
         {
@@ -545,7 +545,7 @@ double specificity(std::vector<std::vector<double>> &m, std::vector<std::vector<
 
     for (int i = 0; i < m.at(1).size(); i++)
     {
-        std::tuple<double, double> prob = naiveBayes(m.at(0).at(i), m.at(1).at(i), m.at(3).at(i), lpclass, lsex, lage, mean, var, apriori);
+        std::tuple<double, double> prob = naiveBayes(m.at(0).at(i), m.at(2).at(i), m.at(3).at(i), lpclass, lsex, lage, mean, var, apriori);
 
         if (std::get<0>(prob) > std::get<1>(prob))
         {

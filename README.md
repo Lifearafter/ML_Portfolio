@@ -25,3 +25,9 @@ You can see the [R Notebook here](code/Regression.Rmd) and the [descriptive docu
 This document contains my c++ implementation different classification algorithms.
 
 You can see the [Naive Bayes](code/NaiveBayes.c++), [Logarithmic Regression](code/LogarithmicReg.cpp) and the [descriptive document here](pdfs/C++Algorithms.pdf).
+
+## Dimensionality Reduction
+
+This document contains the notebook for the dimensionality reduction part of the Similarity and Ensemble project.
+
+You can see the [RMD Notebook](code/Dimensionality_Reduction.rmd) and the [descriptive document here](pdfs/Dimensionality_Reduction.pdf).
