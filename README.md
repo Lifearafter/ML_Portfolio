@@ -31,3 +31,9 @@ You can see the [Naive Bayes](code/NaiveBayes.c++), [Logarithmic Regression](cod
 This document contains the notebook for the dimensionality reduction part of the Similarity and Ensemble project.
 
 You can see the [RMD Notebook](code/Dimensionality_Reduction.rmd) and the [descriptive document here](pdfs/Dimensionality_Reduction.pdf).
+
+## Machine Learning with SKLearn
+
+This document contains the notebook for the python based machine learning done using the `sklearn` library.
+
+You can see the [RMD Notebook](code/ML_Sklearn.ipynb) and the [descriptive document here](pdfs/ML_Sklearn.pdf).
