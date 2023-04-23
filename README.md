@@ -37,3 +37,9 @@ You can see the [RMD Notebook](code/Dimensionality_Reduction.rmd) and the [descr
 This document contains the notebook for the python based machine learning done using the `sklearn` library.
 
 You can see the [RMD Notebook](code/ML_Sklearn.ipynb) and the [descriptive document here](pdfs/ML_Sklearn.pdf).
+
+## Deep Learning Image Classification
+
+This document contains the notebook for the image classification done using tensorflow keras.
+
+You can see the [RMD Notebook](code/ImageClassification.ipynb) and the [descriptive document here](pdfs/ImageClassification.pdf).
