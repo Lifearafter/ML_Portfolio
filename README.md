@@ -2,6 +2,8 @@
 
 This is a portfolio for CS 4375 - Machine Learning.
 
+In this portfolio, I explored various machine learning approaches using a range of tools. Specifically, I leveraged R to implement a variety of machine learning algorithms in the first part, and utilized Python for the same purpose in the second part. For the third section, I delved into deep learning with TensorFlow Keras. Through this process, I deepened my understanding of R, enhanced my Python proficiency, and gained significant experience with TensorFlow and deep learning. I also honed my ability to evaluate model outputs and optimize their performance. Given the considerable time required to train some models, I developed stronger time management skills, and learned how to work effectively under pressure, balancing this project with other demanding assignments.
+
 ## Overview of ML
 
 This document contains my understanding of general ML topics and definitions.
